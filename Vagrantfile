@@ -3,7 +3,7 @@
 
 # Vagrant plugins required:
 #   vagrant plugin install vagrant-vbguest
-#
+#   vagrant plugin install vagrant-docker-compose
 Vagrant.configure("2") do |config|
 
     config.vm.box       = "debian/jessie64"
@@ -41,7 +41,9 @@ Vagrant.configure("2") do |config|
                 APP_ID: "MyAppID",
                 MASTER_KEY: "MyMasterKey",
                 PARSE_DASHBOARD_ALLOW_INSECURE_HTTP: "1",
-                SERVER_URL: "http://localhost:1337/parse"
+                SERVER_URL: "http://localhost:1337/parse",
+                USER1: "parseadmin",
+                USER1_PASSWORD: "adminpass"
             }
 end
 
