@@ -4,7 +4,7 @@ Create a vagrant environment for parse-server provisioned by docker
 
 * [docker-parse-server](https://github.com/yongjhih/docker-parse-server)
 
-# Requirements
+## Requirements
 
 * Vagrant (virtualbox) ~1.8
 * Vagrant plugins
