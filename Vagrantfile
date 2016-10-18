@@ -53,6 +53,7 @@ Vagrant.configure("2") do |config|
         env: {
                 APP_ID: "MyAppID",
                 MASTER_KEY: "MyMasterKey",
+                JAVASCRIPT_KEY: "JSAppKey",
                 PARSE_SERVER_VIRTUAL_HOST: "api.parse.dev",
                 PARSE_SERVER_LETSENCRYPT_HOST: "api.parse.dev",
                 PARSE_SERVER_LETSENCRYPT_EMAIL: "parse.dev@gmail.com",
