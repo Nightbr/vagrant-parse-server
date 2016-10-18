@@ -1,0 +1,3 @@
+[submodule "docker-parse-server"]
+	path = docker-parse-server
+	url = https://github.com/yongjhih/docker-parse-server.git

@@ -4,15 +4,27 @@
 # Vagrant plugins required:
 #   vagrant plugin install vagrant-vbguest
 #   vagrant plugin install vagrant-docker-compose
+#   vagrant plugin install vagrant-hostmanager
 Vagrant.configure("2") do |config|
 
-    config.vm.box       = "debian/jessie64"
+    config.vm.box = "debian/jessie64"
     config.vm.box_version = ">= 8.4.0"
     config.vm.box_check_update = false
-    config.vm.host_name = "dev"
-    config.vm.network "private_network", ip: "192.168.33.11"
-    config.vm.network "forwarded_port", guest: 1337, host: 1337
-    config.vm.network "forwarded_port", guest: 4040, host: 4040
+    # configure hosts
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = false
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+    config.vm.define 'default' do |node|
+       node.vm.hostname = 'parse-dev-hostname'
+       node.vm.network :private_network, ip: '192.168.33.11'
+       node.hostmanager.aliases = %w(dash.parse.dev api.parse.dev)
+    end
+    # Parse API port
+    #config.vm.network "forwarded_port", guest: 1337, host: 1337
+    # Parse Dashboard port
+    #config.vm.network "forwarded_port", guest: 4040, host: 4040
 
     config.vm.provider "virtualbox" do |v|
       v.memory = 2048
@@ -21,9 +33,9 @@ Vagrant.configure("2") do |config|
 
     if OS.windows?
         # fix bug: http://stackoverflow.com/questions/34176041/vagrant-with-virtualbox-on-windows10-rsync-could-not-be-found-on-your-path
-        config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+        config.vm.synced_folder "docker-parse-server/", "/vagrant", type: "virtualbox"
     else
-        config.vm.synced_folder ".", "/vagrant", type: "nfs"
+        config.vm.synced_folder "docker-parse-server/", "/vagrant", type: "nfs"
     end
 
     # If errors occur, try running "vagrant provision" manually
@@ -33,15 +45,22 @@ Vagrant.configure("2") do |config|
     # vagrant-docker-compose plugin first. It should also solve the
     # "The '' provisioner could not be found." error:
     # $ vagrant plugin install vagrant-docker-compose
+    # HTTPS works only for production and valid domain name (see let's encrypt for more informations)
     config.vm.provision :docker_compose,
         rebuild: true,
         run: "always",
-        yml: "/vagrant/docker-compose.yml",
+        yml: "/vagrant/docker-compose-le.yml",
         env: {
                 APP_ID: "MyAppID",
                 MASTER_KEY: "MyMasterKey",
+                PARSE_SERVER_VIRTUAL_HOST: "api.parse.dev",
+                PARSE_SERVER_LETSENCRYPT_HOST: "api.parse.dev",
+                PARSE_SERVER_LETSENCRYPT_EMAIL: "parse.dev@gmail.com",
+                SERVER_URL: "http://api.parse.dev/parse",
                 PARSE_DASHBOARD_ALLOW_INSECURE_HTTP: "1",
-                SERVER_URL: "http://localhost:1337/parse",
+                PARSE_DASHBOARD_VIRTUAL_HOST: "dash.parse.dev",
+                PARSE_DASHBOARD_LETSENCRYPT_HOST: "dash.parse.dev",
+                PARSE_DASHBOARD_LETSENCRYPT_EMAIL: "parse.dev@gmail.com",
                 USER1: "parseadmin",
                 USER1_PASSWORD: "adminpass"
             }
