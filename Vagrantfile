@@ -16,6 +16,7 @@ Vagrant.configure("2") do |config|
     config.hostmanager.manage_guest = false
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = true
+    # configure default vm
     config.vm.define 'default' do |node|
        node.vm.hostname = 'parse-dev-hostname'
        node.vm.network :private_network, ip: '192.168.33.11'
@@ -31,6 +32,7 @@ Vagrant.configure("2") do |config|
       v.cpus = 1
     end
 
+    # mount docker-parse-server folder
     if OS.windows?
         # fix bug: http://stackoverflow.com/questions/34176041/vagrant-with-virtualbox-on-windows10-rsync-could-not-be-found-on-your-path
         config.vm.synced_folder "docker-parse-server/", "/vagrant", type: "virtualbox"

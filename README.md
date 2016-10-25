@@ -31,6 +31,7 @@ Create a vagrant environment for parse-server provisioned by docker
 
 - [X] vagrant plugin vagrant-hostmanager (manage hosts for the env)
 - [X] SSL with letsencrypt [ONLY on PROD with valide domain name]
+- [ ] LiveQuery Configuration
 - [ ] expose parse cloud folder
 - [ ] more configuration, more parse services (social, analytics, ...)
 - [ ] more documentation (configure parse SDK, ...)
